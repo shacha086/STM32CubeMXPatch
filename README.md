@@ -19,6 +19,7 @@ The functionality of STM32CubeMXPatch is intentionally minimal: it fixes input/p
 ## 使用方法（中文）
 1. 获取 jar：
    - 下载 Release 中的 app-all.jar，或自行编译（项目使用 Gradle，生成 shadowJar，产物通常为 build/libs/app-all.jar）。
+   - 注意：`app-all.jar` 已经包含了 JNA（jna）依赖，`app-lite.jar` 不包含该依赖；在旧版本的 STM32CubeMX 中，安装包可能没有自带 JNA，因此需要使用 `app-all.jar`。
 2. 备份并复制：
    - 以管理员权限备份并复制 app-all.jar 到：
      C:\Program Files\STMicroelectronics\STM32Cube\STM32CubeMX
@@ -33,6 +34,7 @@ The functionality of STM32CubeMXPatch is intentionally minimal: it fixes input/p
 ## Usage (English)
 1. Obtain the jar:
    - Download app-all.jar from Releases, or build it yourself (Gradle shadowJar, output typically at build/libs/app-all.jar).
+   - Note: `app-all.jar` bundles the JNA dependency while `app-lite.jar` does not; older versions of STM32CubeMX may not ship JNA, so you should use `app-all.jar` in those cases.
 2. Backup and copy:
    - With admin rights, backup and copy app-all.jar to:
      C:\Program Files\STMicroelectronics\STM32Cube\STM32CubeMX
@@ -56,3 +58,4 @@ The functionality of STM32CubeMXPatch is intentionally minimal: it fixes input/p
 - 请参考仓库中已有的 LICENSE 文件（如果存在）。欢迎提交 issue 与 PR，但本项目功能单一，请在 PR 中注明用途与测试步骤。
 
 ---
+

@@ -20,11 +20,10 @@ dependencies {
 application {
     // Define the Fully Qualified Name for the application main class
     // (Note that Kotlin compiles `App.kt` to a class with FQN `com.example.app.AppKt`.)
-    mainClass = "com.shacha.mxpatcher.AppKt"
+    mainClass = "com.shacha.mxpatcher.Agent"
 }
 
-tasks.named<ShadowJar>("shadowJar") {
-    minimize()
+tasks.withType<ShadowJar> {
     manifest {
         attributes(
             "Can-Redefine-Classes" to "true",
@@ -32,4 +31,19 @@ tasks.named<ShadowJar>("shadowJar") {
             "Premain-Class" to "com.shacha.mxpatcher.Agent"
         )
     }
+}
+
+tasks.register<ShadowJar>("liteJar") {
+    archiveClassifier.set("lite")
+    from(sourceSets.main.get().output)
+    configurations = listOf(project.configurations.runtimeClasspath.get())
+    dependencies {
+        exclude(dependency("net.java.dev.jna:jna:.*"))
+        exclude(dependency("net.java.dev.jna:jna-platform:.*"))
+    }
+    minimize()
+}
+
+tasks.build {
+    dependsOn("liteJar")
 }
