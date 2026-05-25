@@ -1,11 +1,14 @@
 package com.shacha.mxpatcher
 
+import com.shacha.mxpatcher.ImeComposingState.Companion.implementImeComposingState
 import com.shacha.mxpatcher.Util.addNamedConstructor
 import com.shacha.mxpatcher.Util.addNamedMethod
 import com.tangorabox.componentinspector.swing.SwingComponentInspectorHandler
 import net.bytebuddy.agent.builder.AgentBuilder
+import net.bytebuddy.description.modifier.Visibility
 import net.bytebuddy.description.type.TypeDescription
 import net.bytebuddy.dynamic.DynamicType
+import net.bytebuddy.implementation.FieldAccessor
 import net.bytebuddy.implementation.MethodDelegation
 import net.bytebuddy.matcher.ElementMatchers
 import net.bytebuddy.matcher.ElementMatchers.named
@@ -14,6 +17,7 @@ import java.io.FileOutputStream
 import java.io.PrintStream
 import java.lang.instrument.Instrumentation
 import java.nio.charset.Charset
+import javax.swing.event.DocumentListener
 import kotlin.jvm.java
 
 
@@ -97,8 +101,21 @@ object Agent {
                 builder.method(named("createDocListener"))
                     .intercept(MethodDelegation.to(AutoCompleteComboBoxDocListenerPatcher::class.java))
             }
+            // patch TextFieldParameterUI constructor
+            .addNamedConstructor(
+                "com.st.microxplorer.plugins.ip.gpio.gui.TextFieldParameterUI",
+                TextFieldParameterUIConstructorPatcher::class.java,
+                ElementMatchers.takesArguments(6)
+            ).transform { builder, _, _, _, _ ->
+                builder.implement(TextFieldParameterUIConstructorPatcher.TextFieldParameterUI::class.java)
+                    .defineMethod("getDocListener", DocumentListener::class.java, Visibility.PUBLIC)
+                    .intercept(FieldAccessor.ofField("doclistener"))
+                    .defineMethod("setDocListener", Void.TYPE, Visibility.PUBLIC)
+                    .withParameters(DocumentListener::class.java)
+                    .intercept(FieldAccessor.ofField("doclistener"))
+                    .implementImeComposingState()
+            }
             .installOn(inst)
-
     }
 
 }
