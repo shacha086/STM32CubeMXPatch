@@ -2,7 +2,7 @@ package com.shacha.mxpatcher
 
 import com.shacha.mxpatcher.Util.addNamedConstructor
 import com.shacha.mxpatcher.Util.addNamedMethod
-import com.st.components.util.Searchable
+import com.tangorabox.componentinspector.swing.SwingComponentInspectorHandler
 import net.bytebuddy.agent.builder.AgentBuilder
 import net.bytebuddy.description.type.TypeDescription
 import net.bytebuddy.dynamic.DynamicType
@@ -77,7 +77,9 @@ object Agent {
                 ex.printStackTrace()
             }
         }
-
+        if (args?.contains("inspector") == true) {
+            SwingComponentInspectorHandler.handleAll()
+        }
         AgentBuilder.Default()
             .with(AgentListener())
             .addNamedMethod(
