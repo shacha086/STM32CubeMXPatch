@@ -86,16 +86,22 @@ object Agent {
         }
         AgentBuilder.Default()
             .with(AgentListener())
+            // patch STM32CubeMX#main
             .addNamedMethod(
                 "com.st.microxplorer.maingui.STM32CubeMX",
                 "main",
                 STM32CubeMXMainPatcher::class.java
             )
+            // patch AutocompleteComboBox constructor
             .addNamedConstructor(
                 "com.st.components.swing.AutocompleteComboBox",
                 AutoCompleteComboBoxConstructorPatcher::class.java,
-                ElementMatchers.takesArgument(0, Searchable::class.java)
-            )
+                ElementMatchers.takesArgument(0, named("com.st.components.util.Searchable"))
+            ).transform { builder, _, _, _, _ ->
+                builder.implement(AutoCompleteComboBox::class.java)
+                    .implementImeComposingState()
+            }
+            // patch AutocompleteComboBox#createDocListener
             .type(named("com.st.components.swing.AutocompleteComboBox"))
             .transform { builder, _, _, _, _ ->
                 builder.method(named("createDocListener"))

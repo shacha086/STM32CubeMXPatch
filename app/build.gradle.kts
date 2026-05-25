@@ -14,7 +14,6 @@ dependencies {
     implementation("net.java.dev.jna:jna:5.17.0")
     implementation("net.java.dev.jna:jna-platform:5.17.0")
     implementation("com.tangorabox:component-inspector-swing:1.1.0")
-    compileOnly(rootProject.files("libs/STM32CubeMX.jar"))
 }
 
 application {
