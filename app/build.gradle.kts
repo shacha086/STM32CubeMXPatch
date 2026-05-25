@@ -20,7 +20,7 @@ dependencies {
 application {
     // Define the Fully Qualified Name for the application main class
     // (Note that Kotlin compiles `App.kt` to a class with FQN `com.example.app.AppKt`.)
-    mainClass = "com.shacha.mxpatcher.Agent"
+    mainClass = "com.shacha.mxpatcher.AgentKt"
 }
 
 tasks.withType<ShadowJar> {
@@ -28,7 +28,8 @@ tasks.withType<ShadowJar> {
         attributes(
             "Can-Redefine-Classes" to "true",
             "Can-Retransform-Classes" to "true",
-            "Premain-Class" to "com.shacha.mxpatcher.Agent"
+            "Premain-Class" to "com.shacha.mxpatcher.Agent",
+            "Main-Class" to application.mainClass
         )
     }
 }

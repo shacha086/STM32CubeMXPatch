@@ -98,8 +98,9 @@ object Agent {
             .installOn(inst)
 
     }
-    
-    fun main() {
-        println("Usage: -javaagent:this.jar")
-    }
+
+}
+
+fun main() {
+    println("Usage: -javaagent:this.jar")
 }
