@@ -8,12 +8,25 @@ plugins {
     application
 }
 
+sourceSets {
+    val stub by creating {
+        java.srcDir("src/stub/java")
+    }
+    
+    val debug by creating {
+        java.srcDir("src/debug/kotlin")
+    }
+}
+
 dependencies {
     implementation("net.bytebuddy:byte-buddy:1.18.8")
     implementation("net.bytebuddy:byte-buddy-agent:1.18.8")
     implementation("net.java.dev.jna:jna:5.17.0")
     implementation("net.java.dev.jna:jna-platform:5.17.0")
     implementation("com.tangorabox:component-inspector-swing:1.1.0")
+    compileOnly(sourceSets["stub"].output)
+    "debugImplementation"(files("C:\\Program Files\\STMicroelectronics\\STM32Cube\\STM32CubeMX\\STM32CubeMX.jar"))
+    "debugImplementation"(files("C:\\Program Files\\STMicroelectronics\\STM32Cube\\STM32CubeMX\\plugins\\projectmanager.jar"))
 }
 
 application {
@@ -46,4 +59,21 @@ tasks.register<ShadowJar>("liteJar") {
 
 tasks.build {
     dependsOn("liteJar")
+}
+
+tasks.register<JavaExec>("runDebug") {
+    dependsOn("build")
+    group = "application"
+
+    mainClass.set("debug.MainKt")
+
+    classpath = sourceSets["debug"].runtimeClasspath
+
+    jvmArgs = listOf(
+        "-javaagent:C:\\Users\\shach\\IdeaProjects\\STM32CubeMXPatch\\app\\build\\libs\\app-lite.jar=debug,inspector"
+    )
+    
+    javaLauncher.set(javaToolchains.launcherFor {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    })
 }
